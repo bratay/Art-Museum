@@ -6,7 +6,6 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
       theme: ThemeData(
         primaryColor: Colors.blue,
         primaryColorDark: Colors.blueGrey,
@@ -53,7 +52,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: SafeArea(
         child: Column(
-          children: <Widget>[
+          children: [
             Expanded(child: worksOfArt()),
             RaisedButton(
               child: Text('Load more images'),
@@ -61,8 +60,8 @@ class _HomePageState extends State<HomePage> {
                 final images = await requestImages();
                 setState(() => picData.addAll(images));
               },
-              color: Theme.of(context).buttonColor, //Colors.brown[200],
-              splashColor: Theme.of(context).splashColor,
+              color: Theme.of(context).buttonColor, //Colors.white,
+              splashColor: Theme.of(context).splashColor, //Colors.orangeAccent
             )
           ],
         ),
@@ -72,7 +71,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget worksOfArt() {
     return ListView.builder(
-      itemCount: picData?.length ?? 0, //(picData == null) ? 0 : picData.length,
+      itemCount: (picData == null) ? 0 : picData.length,
       itemBuilder: (context, index) {
         return Padding(
           padding: const EdgeInsets.all(20.0),
@@ -103,7 +102,7 @@ class _HomePageState extends State<HomePage> {
                   ],
                   border: Border.all(
                     color:
-                        Theme.of(context).primaryColorDark, // Colors.grey[700],
+                        Theme.of(context).primaryColorDark, // Colors.blueGrey,
                     width: 10.0,
                   ),
                 ),
@@ -220,7 +219,7 @@ class InfoCard extends StatelessWidget {
           style: Theme.of(context).textTheme.body1,
         ),
       ),
-      color: Theme.of(context).cardColor,
+      color: Theme.of(context).cardColor, //Colors.grey[300]
     );
   }
 }
