@@ -6,23 +6,7 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        primaryColor: Colors.blue,
-        primaryColorDark: Colors.blueGrey,
-        primaryColorLight: Colors.blueAccent,
-        backgroundColor: Colors.grey[500],
-        buttonColor: Colors.white,
-        splashColor: Colors.orangeAccent,
-        cardColor: Colors.grey[300],
-        textTheme: TextTheme(
-          headline: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
-          title: TextStyle(
-              fontSize: 36.0,
-              fontStyle: FontStyle.italic,
-              fontFamily: 'Raleway'),
-          body1: TextStyle(fontSize: 15.0, fontFamily: 'Hind'),
-        ),
-      ),
+      theme: ThemeData(primaryColor: Colors.teal[50]),
       home: HomePage(),
     );
   }
@@ -45,49 +29,62 @@ class _HomePageState extends State<HomePage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor, //Colors.grey[500],
+      backgroundColor: Colors.teal[100],
       appBar: AppBar(
-        title: Text('The Harvard Art Museums'),
-        backgroundColor: Theme.of(context).primaryColorDark, //Colors.blueGrey,
+        title: Text('The Art Museum'),
+        backgroundColor: Colors.teal[50],
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(child: worksOfArt()),
-            RaisedButton(
-              child: Text('Load more images'),
-              onPressed: () async {
-                final images = await requestImages();
-                setState(() => picData.addAll(images));
-              },
-              color: Theme.of(context).buttonColor, //Colors.white,
-              splashColor: Theme.of(context).splashColor, //Colors.orangeAccent
-            )
-          ],
-        ),
+      body: Column(
+        children: [
+          Expanded(child: worksOfArt()),
+          RaisedButton(
+            child: Text('Load more Artwork'),
+            onPressed: () async {
+              final images = await requestImages();
+              setState(() => picData.addAll(images));
+            },
+            color: Colors.white,
+            splashColor: Colors.brown,
+          )
+        ],
       ),
     );
   }
 
   Widget worksOfArt() {
+    final deviceSize = MediaQuery.of(context).size;
     return ListView.builder(
+      scrollDirection: Axis.horizontal,
       itemCount: (picData == null) ? 0 : picData.length,
       itemBuilder: (context, index) {
+        var data = picData[index];
+        var imageData = picData[index].images[0];
+        var height, width;
+        if (imageData.height / 3 > deviceSize.height - 245) {
+          height = deviceSize.height / 1.5;
+          var scaleRatio = (deviceSize.height / 1.5) / imageData.height;
+          width = imageData.width * scaleRatio;
+        } else {
+          height = imageData.height / 3;
+          width = imageData.width / 3;
+        }
         return Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
                 child: InkWell(
-                  onTap: () => routeToInfo(picData[index]),
+                  onTap: () => routeToInfo(data),
                   child: Hero(
-                    tag: picData[index].primaryImageUrl,
+                    tag: data.primaryImageUrl,
                     child: FadeInImage.assetNetwork(
-                      height: 400,
-                      width: 400,
+                      height: height,
+                      width: width,
                       fadeInDuration: const Duration(milliseconds: 500),
-                      placeholder: 'assets/marble.jpg',
-                      image: picData[index].primaryImageUrl,
+                      placeholder: 'assets/flutterLogo.jpg',
+                      placeholderScale: 4,
+                      image: data.primaryImageUrl,
                     ),
                   ),
                 ),
@@ -101,8 +98,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ],
                   border: Border.all(
-                    color:
-                        Theme.of(context).primaryColorDark, // Colors.blueGrey,
+                    color: Colors.brown,
                     width: 10.0,
                   ),
                 ),
@@ -131,95 +127,111 @@ class ObjectInfoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final imageData = picData.images[0];
+    final artistData = picData.people[0];
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor, //Colors.grey[500],
+      backgroundColor: Colors.teal[100],
       appBar: AppBar(
-        title: Text('Information'),
-        backgroundColor: Theme.of(context).primaryColorDark, //Colors.blueGrey,
+        title: Text('Artwork Information'),
+        backgroundColor: Colors.teal[50],
       ),
-      body: Center(
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: ListView(
-                children: <Widget>[
-                  Hero(
-                    tag: picData.primaryImageUrl,
-                    child: Image.network(picData.primaryImageUrl),
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ListView(
+                    children: <Widget>[
+                      Hero(
+                        tag: picData.primaryImageUrl,
+                        child: Image.network(picData.primaryImageUrl),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 15.0, top: 15.0),
+                        child: Wrap(
+                          alignment: WrapAlignment.center,
+                          children: [
+                            Text(
+                              picData.title + '( ${picData.date})',
+                              style: TextStyle(
+                                  fontSize: 20.0,
+                                  fontStyle: FontStyle.italic,
+                                  fontFamily: 'Raleway'),
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (picData.people != null && artistData.role == 'Artist')
+                        Wrap(
+                          children: [
+                            Text(artistData.name + '( ${artistData.lifeSpan})',
+                                style: TextStyle(fontSize: 17)),
+                          ],
+                        ),
+                      if (picData.people != null)
+                        WrapInfo(artistData.culture, 12),
+                      WrapInfo(picData.caption, 12),
+                      WrapInfo(picData.description, 12),
+                      Wrap(
+                        children: [
+                          ChipInfo(picData.technique),
+                          ChipInfo(picData.medium),
+                          ChipInfo(picData.classification),
+                          if (imageData.width != null &&
+                              imageData.height != null)
+                            ChipInfo(
+                                '${imageData.width} x ${imageData.height}'),
+                        ],
+                      ),
+                      WrapInfo(picData.copyright, 12),
+                    ],
                   ),
-                  InfoCard('Title:', picData.title),
-                  InfoCard('Caption:', picData.caption),
-                  InfoCard('Description:', picData.description),
-                  InfoCard('Medium:', picData.medium),
-                  InfoCard('Date:', picData.date),
-                  InfoCard('Century:', picData.century),
-                  InfoCard('Technique:', picData.technique),
-                  InfoCard('Style:', picData.style),
-                  InfoCard('Classification:', picData.classification),
-                  if (picData.images[0].width != null &&
-                      picData.images[0].height != null)
-                    InfoCard('Dimensions:',
-                        '${picData.images[0].width} x ${picData.images[0].height}'),
-                  InfoCard('Copyright:', picData.copyright),
-                  if (picData.people != null &&
-                      picData.people[0].role == 'Artist')
-                    ArtistInfo(picData.people[0]),
-                ],
+                ),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class ArtistInfo extends StatelessWidget {
-  final PersonInfo artist;
-
-  ArtistInfo(this.artist);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Text('The Artist', style: Theme.of(context).textTheme.title),
+            ],
           ),
-          InfoCard('Name:', artist.name),
-          if (artist.gender != 'unknown') InfoCard('Gender:', artist.gender),
-          InfoCard('Culture:', artist.culture),
-          if (artist.birthPlace != 'Unknown')
-            InfoCard('Birthplace:', artist.birthPlace),
-          if (artist.deathPlace != 'Unknown')
-            InfoCard('Deathplace:', artist.deathPlace),
-          InfoCard('Life Span:', artist.lifeSpan),
-        ],
+        ),
       ),
     );
   }
 }
 
-class InfoCard extends StatelessWidget {
-  final String leading;
-  final String title;
+class ChipInfo extends StatelessWidget {
+  final String text;
 
-  InfoCard(this.leading, this.title);
+  ChipInfo(this.text);
 
   @override
   Widget build(BuildContext context) {
-    if (title == null) return Container();
-    return Card(
-      child: ListTile(
-        leading: Text(leading),
-        title: Text(
-          title,
-          style: Theme.of(context).textTheme.body1,
+    if (text == null) return Padding(padding: EdgeInsets.all(0.0));
+    return Padding(
+      padding: const EdgeInsets.only(right: 2.0, left: 2.0),
+      child: Chip(
+        label: Text(
+          text,
+          style: TextStyle(fontSize: 12),
         ),
       ),
-      color: Theme.of(context).cardColor, //Colors.grey[300]
+    );
+  }
+}
+
+class WrapInfo extends StatelessWidget {
+  final String text;
+  final double size;
+
+  WrapInfo(this.text, this.size);
+
+  @override
+  Widget build(BuildContext context) {
+    if (text == null) return Padding(padding: EdgeInsets.all(0.0));
+    return Padding(
+      padding: const EdgeInsets.only(right: 2.0, left: 2.0),
+      child: Wrap(
+        children: [Text(text, style: TextStyle(fontSize: size))],
+      ),
     );
   }
 }
