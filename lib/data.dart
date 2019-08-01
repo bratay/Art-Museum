@@ -67,8 +67,7 @@ class ObjectInfo {
 
 class ImageInfo {
   String baseImageUrl;
-  int width;
-  int height;
+  int width, height;
 
   ImageInfo.fromJson(Map<String, dynamic> map) {
     this.baseImageUrl = map['baseimageurl'] as String;
@@ -84,19 +83,10 @@ class PersonInfo {
     this.name = map['displayname'] as String;
     this.role = map['role'] as String;
     this.lifeSpan = map['displaydate'] as String;
-    this.gender = map['gender'] as String;
     this.culture = map['culture'] as String;
-    this.birthPlace = (map['birthplace'] ?? 'Unknown') as String;
-    this.deathPlace = (map['deathplace'] ?? 'Unknown') as String;
   }
 }
 
 //API  key = b1e1f600-aa67-11e9-adb9-2fdc07e84b9c
 
 //test request for a image from harvard = https://api.harvardartmuseums.org/image/465905?apikey=b1e1f600-aa67-11e9-adb9-2fdc07e84b9c
-
-//Test request for luke Skywalker = https://swapi.co/api/people/1
-
-//For random images - https://api.harvardartmuseums.org/image?sort=random&apikey=b1e1f600-aa67-11e9-adb9-2fdc07e84b9c
-
-//A IMAGE URL: 'https://ids.lib.harvard.edu/ids/view/400107495'

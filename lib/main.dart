@@ -6,7 +6,7 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(primaryColor: Colors.teal[50]),
+      theme: ThemeData( primaryColor: Colors.teal[50] ),
       home: HomePage(),
     );
   }
@@ -34,19 +34,21 @@ class _HomePageState extends State<HomePage> {
         title: Text('The Art Museum'),
         backgroundColor: Colors.teal[50],
       ),
-      body: Column(
-        children: [
-          Expanded(child: worksOfArt()),
-          RaisedButton(
-            child: Text('Load more Artwork'),
-            onPressed: () async {
-              final images = await requestImages();
-              setState(() => picData.addAll(images));
-            },
-            color: Colors.white,
-            splashColor: Colors.brown,
-          )
-        ],
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(child: worksOfArt()),
+            RaisedButton(
+              child: Text('Load more Artwork'),
+              onPressed: () async {
+                final images = await requestImages();
+                setState(() => picData.addAll(images));
+              },
+              color: Colors.white,
+              splashColor: Colors.brown,
+            )
+          ],
+        ),
       ),
     );
   }
@@ -61,9 +63,8 @@ class _HomePageState extends State<HomePage> {
         var imageData = picData[index].images[0];
         var height, width;
         if (imageData.height / 3 > deviceSize.height - 245) {
-          height = deviceSize.height / 1.5;
-          var scaleRatio = (deviceSize.height / 1.5) / imageData.height;
-          width = imageData.width * scaleRatio;
+          height = deviceSize.height / 2;
+          width = imageData.width * (height / imageData.height);
         } else {
           height = imageData.height / 3;
           width = imageData.width / 3;
@@ -74,7 +75,7 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                child: InkWell(
+                child: GestureDetector(
                   onTap: () => routeToInfo(data),
                   child: Hero(
                     tag: data.primaryImageUrl,
@@ -94,13 +95,20 @@ class _HomePageState extends State<HomePage> {
                     BoxShadow(
                       color: Colors.white,
                       blurRadius: 10.0,
-                      spreadRadius: 3,
+                      spreadRadius: 3.0,
                     ),
                   ],
                   border: Border.all(
                     color: Colors.brown,
                     width: 10.0,
                   ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.only(top: 16.0),
+                width: width,
+                child: Center(
+                  child: Text(data.title),
                 ),
               ),
             ],
@@ -127,8 +135,8 @@ class ObjectInfoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageData = picData.images[0];
-    final artistData = picData.people[0];
+    final imageData = (picData.images == null) ? null : picData.images[0];
+    final artistData = (picData.people == null) ? null : picData.people[0];
     return Scaffold(
       backgroundColor: Colors.teal[100],
       appBar: AppBar(
@@ -154,7 +162,7 @@ class ObjectInfoScreen extends StatelessWidget {
                           alignment: WrapAlignment.center,
                           children: [
                             Text(
-                              picData.title + '( ${picData.date})',
+                              picData.title + ' (${picData.date})',
                               style: TextStyle(
                                   fontSize: 20.0,
                                   fontStyle: FontStyle.italic,
@@ -166,7 +174,7 @@ class ObjectInfoScreen extends StatelessWidget {
                       if (picData.people != null && artistData.role == 'Artist')
                         Wrap(
                           children: [
-                            Text(artistData.name + '( ${artistData.lifeSpan})',
+                            Text(artistData.name + ' (${artistData.lifeSpan})',
                                 style: TextStyle(fontSize: 17)),
                           ],
                         ),
