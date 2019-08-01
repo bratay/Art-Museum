@@ -16,10 +16,10 @@ Future<List<ObjectInfo>> requestImages() async {
     }
 
     List<ObjectInfo> output =
-    MuseumResponse.fromJson(json.decode(result) as Map<String, dynamic>)
-        .records
-        .where((r) => r.primaryImageUrl != null)
-        .toList();
+        MuseumResponse.fromJson(json.decode(result) as Map<String, dynamic>)
+            .records
+            .where((r) => r.primaryImageUrl != null)
+            .toList();
 
     return output;
   } catch (e) {
@@ -67,8 +67,7 @@ class ObjectInfo {
 
 class ImageInfo {
   String baseImageUrl;
-  int width;
-  int height;
+  int width, height;
 
   ImageInfo.fromJson(Map<String, dynamic> map) {
     this.baseImageUrl = map['baseimageurl'] as String;
@@ -78,15 +77,12 @@ class ImageInfo {
 }
 
 class PersonInfo {
-  String name, role, lifeSpan, gender, birthPlace, deathPlace, culture;
+  String name, role, lifeSpan, culture;
 
   PersonInfo.fromJson(Map<String, dynamic> map) {
     this.name = map['displayname'] as String;
     this.role = map['role'] as String;
     this.lifeSpan = map['displaydate'] as String;
-    this.gender = map['gender'] as String;
     this.culture = map['culture'] as String;
-    this.birthPlace = (map['birthplace'] ?? 'Unknown') as String;
-    this.deathPlace = (map['deathplace'] ?? 'Unknown') as String;
   }
 }
