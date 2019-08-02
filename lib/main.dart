@@ -71,55 +71,47 @@ class _HomePageState extends State<HomePage> {
             ],
           );
         var data = picData[index];
-        var imageData = picData[index].images[0];
-        var height, width;
-
-        if (imageData.height / 3 > deviceSize.height - 245) {
-          height = deviceSize.height / 2;
-          width = imageData.width * (height / imageData.height);
-        } else {
-          height = imageData.height / 3;
-          width = imageData.width / 3;
-        }
-
-        if (width > deviceSize.width) {
-          var oldWidth = width;
-          width = deviceSize.width / 2;
-          height = height * (width / oldWidth);
-        }
+        var height = deviceSize.height * .7;
+        var width = deviceSize.width * .9;
 
         return Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                child: GestureDetector(
-                  onTap: () => null,
-                  child: Hero(
-                    tag: data.primaryImageUrl,
-                    child: FadeInImage.assetNetwork(
-                      height: height,
-                      width: width,
-                      fadeInDuration: const Duration(milliseconds: 500),
-                      placeholder: 'assets/flutterLogo.jpg',
-                      placeholderScale: 4,
-                      image: data.primaryImageUrl,
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: height,
+                  maxWidth: width,
+                  minHeight: deviceSize.height * .2,
+                  minWidth: deviceSize.width * .3,
+                ),
+                child: Container(
+                  child: GestureDetector(
+                    onTap: () => null,
+                    child: Hero(
+                      tag: data.primaryImageUrl,
+                      child: FadeInImage.assetNetwork(
+                        fadeInDuration: const Duration(milliseconds: 500),
+                        placeholder: 'assets/flutterLogo.jpg',
+                        placeholderScale: 4,
+                        image: data.primaryImageUrl,
+                      ),
                     ),
                   ),
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.white,
-                      blurRadius: 10.0,
-                      spreadRadius: 3.0,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.white,
+                        blurRadius: 10.0,
+                        spreadRadius: 3.0,
+                      ),
+                    ],
+                    border: Border.all(
+                      color: Colors.brown,
+                      width: 10.0,
                     ),
-                  ],
-                  border: Border.all(
-                    color: Colors.brown,
-                    width: 10.0,
                   ),
                 ),
               ),
