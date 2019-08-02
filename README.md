@@ -29,3 +29,4 @@ the JSON string into usable objects to display in `main.dart`
  * [The FlutterDev Google Group](https://groups.google.com/forum/#!forum/flutter-dev)
  * [The Flutter Gitter channel](https://gitter.im/flutter/flutter)
  * [StackOverflow](https://stackoverflow.com/questions/tagged/flutter)
+ * [Flutter Homepage](https://flutter.dev)
