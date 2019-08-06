@@ -7,7 +7,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(primaryColor: Colors.teal[50]),
+      theme: ThemeData(
+        primaryColor: Colors.teal[50],
+        scaffoldBackgroundColor: Colors.teal[100],
+      ),
       home: HomePage(),
     );
   }
@@ -30,7 +33,6 @@ class _HomePageState extends State<HomePage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.teal[100],
       appBar: AppBar(
         title: Text('The Art Museum'),
       ),
@@ -88,7 +90,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 child: Container(
                   child: GestureDetector(
-                    onTap: () => routeToInfo(data),
+                    onTap: () => _routeToInfo(data),
                     child: Hero(
                       tag: data.primaryImageUrl,
                       child: FadeInImage.assetNetwork(
@@ -129,7 +131,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void routeToInfo(ObjectInfo picData) {
+  void _routeToInfo(ObjectInfo picData) {
     setState(() {
       Navigator.push(
         context,
@@ -149,68 +151,59 @@ class ArtworkInfoScreen extends StatelessWidget {
     final imageData = (picData.images == null) ? null : picData.images[0];
     final artistData = (picData.people == null) ? null : picData.people[0];
     return Scaffold(
-      backgroundColor: Colors.teal[100],
       appBar: AppBar(
         title: Text('Artwork Information'),
-        backgroundColor: Colors.teal[50],
       ),
       body: SafeArea(
-        child: Center(
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ListView(
-                    children: <Widget>[
-                      Hero(
-                        tag: picData.primaryImageUrl,
-                        child: Image.network(picData.primaryImageUrl),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 15.0, top: 15.0),
-                        child: Wrap(
-                          alignment: WrapAlignment.center,
-                          children: [
-                            Text(
-                              picData.title + ' (${picData.date})',
-                              style: TextStyle(
-                                  fontSize: 20.0,
-                                  fontStyle: FontStyle.italic,
-                                  fontFamily: 'Raleway'),
-                            ),
-                          ],
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.all(8.0),
+                children: <Widget>[
+                  Hero(
+                    tag: picData.primaryImageUrl,
+                    child: Image.network(picData.primaryImageUrl),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 15.0, top: 15.0),
+                    child: Wrap(
+                      alignment: WrapAlignment.center,
+                      children: [
+                        Text(
+                          '${picData.title} (${picData.date})',
+                          style: TextStyle(
+                              fontSize: 20.0,
+                              fontStyle: FontStyle.italic,
+                              fontFamily: 'Raleway'),
                         ),
-                      ),
-                      if (picData.people != null && artistData.role == 'Artist')
-                        Wrap(
-                          children: [
-                            Text(artistData.name + ' (${artistData.lifeSpan})',
-                                style: TextStyle(fontSize: 17)),
-                          ],
-                        ),
-                      if (picData.people != null)
-                        WrapInfo(artistData.culture, 12),
-                      WrapInfo(picData.caption, 12),
-                      WrapInfo(picData.description, 12),
-                      Wrap(
-                        children: [
-                          ChipInfo(picData.technique),
-                          ChipInfo(picData.medium),
-                          ChipInfo(picData.classification),
-                          if (imageData.width != null &&
-                              imageData.height != null)
-                            ChipInfo(
-                                '${imageData.width} x ${imageData.height}'),
-                        ],
-                      ),
-                      WrapInfo(picData.copyright, 12),
+                      ],
+                    ),
+                  ),
+                  if (picData.people != null && artistData.role == 'Artist')
+                    Wrap(
+                      children: [
+                        Text('${artistData.name} (${artistData.lifeSpan})',
+                            style: TextStyle(fontSize: 17)),
+                      ],
+                    ),
+                  if (picData.people != null) WrapInfo(artistData.culture, 12),
+                  WrapInfo(picData.caption, 12),
+                  WrapInfo(picData.description, 12),
+                  Wrap(
+                    children: [
+                      ChipInfo(picData.technique),
+                      ChipInfo(picData.medium),
+                      ChipInfo(picData.classification),
+                      if (imageData.width != null && imageData.height != null)
+                        ChipInfo('${imageData.width} x ${imageData.height}'),
                     ],
                   ),
-                ),
+                  WrapInfo(picData.copyright, 12),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
