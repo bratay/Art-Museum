@@ -61,7 +61,7 @@ class _HomePageState extends State<HomePage> {
                 child: RaisedButton(
                   child: Text('More'),
                   shape: StadiumBorder(),
-                  elevation: 15,
+                  elevation: 7,
                   onPressed: () async {
                     final images = await requestImages();
                     setState(() => picData.addAll(images));
@@ -173,7 +173,7 @@ class ArtworkInfoScreen extends StatelessWidget {
                         Text(
                           '${picData.title} (${picData.date})',
                           style: TextStyle(
-                              fontSize: 20.0,
+                              fontSize: 24.0,
                               fontStyle: FontStyle.italic,
                               fontFamily: 'Raleway'),
                         ),
@@ -184,12 +184,12 @@ class ArtworkInfoScreen extends StatelessWidget {
                     Wrap(
                       children: [
                         Text('${artistData.name} (${artistData.lifeSpan})',
-                            style: TextStyle(fontSize: 17)),
+                            style: TextStyle(fontSize: 20)),
                       ],
                     ),
-                  if (picData.people != null) WrapInfo(artistData.culture, 12),
-                  WrapInfo(picData.caption, 12),
-                  WrapInfo(picData.description, 12),
+                  if (picData.people != null) WrapInfo(artistData.culture, 15),
+                  WrapInfo(picData.caption, 15),
+                  WrapInfo(picData.description, 15),
                   Wrap(
                     children: [
                       ChipInfo(picData.technique),
@@ -199,7 +199,7 @@ class ArtworkInfoScreen extends StatelessWidget {
                         ChipInfo('${imageData.width} x ${imageData.height}'),
                     ],
                   ),
-                  WrapInfo(picData.copyright, 12),
+                  WrapInfo(picData.copyright, 15),
                 ],
               ),
             ),
@@ -223,7 +223,7 @@ class ChipInfo extends StatelessWidget {
       child: Chip(
         label: Text(
           text,
-          style: TextStyle(fontSize: 12),
+          style: TextStyle(fontSize: 15),
         ),
       ),
     );
