@@ -7,7 +7,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(primaryColor: Colors.teal[50]),
+      theme: ThemeData(
+        primaryColor: Colors.teal[50],
+        scaffoldBackgroundColor: Colors.teal[100],
+      ),
       home: HomePage(),
     );
   }
@@ -30,7 +33,6 @@ class _HomePageState extends State<HomePage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.teal[100],
       appBar: AppBar(
         title: Text('The Art Museum'),
       ),
@@ -59,7 +61,7 @@ class _HomePageState extends State<HomePage> {
                 child: RaisedButton(
                   child: Text('More'),
                   shape: StadiumBorder(),
-                  elevation: 15,
+                  elevation: 7,
                   onPressed: () async {
                     final images = await requestImages();
                     setState(() => picData.addAll(images));
@@ -88,7 +90,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 child: Container(
                   child: GestureDetector(
-                    onTap: () => null,
+                    onTap: () => _routeToInfo(data),
                     child: Hero(
                       tag: data.primaryImageUrl,
                       child: FadeInImage.assetNetwork(
@@ -126,6 +128,122 @@ class _HomePageState extends State<HomePage> {
           ),
         );
       },
+    );
+  }
+
+  void _routeToInfo(ObjectInfo picData) {
+    setState(() {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ArtworkInfoScreen(picData)),
+      );
+    });
+  }
+}
+
+class ArtworkInfoScreen extends StatelessWidget {
+  final ObjectInfo picData;
+
+  ArtworkInfoScreen(this.picData);
+
+  @override
+  Widget build(BuildContext context) {
+    final imageData = (picData.images == null) ? null : picData.images[0];
+    final artistData = (picData.people == null) ? null : picData.people[0];
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Artwork Information'),
+      ),
+      body: SafeArea(
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.all(8.0),
+                children: <Widget>[
+                  Hero(
+                    tag: picData.primaryImageUrl,
+                    child: Image.network(picData.primaryImageUrl),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 15.0, top: 15.0),
+                    child: Wrap(
+                      alignment: WrapAlignment.center,
+                      children: [
+                        Text(
+                          '${picData.title} (${picData.date})',
+                          style: TextStyle(
+                              fontSize: 24.0,
+                              fontStyle: FontStyle.italic,
+                              fontFamily: 'Raleway'),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (picData.people != null && artistData.role == 'Artist')
+                    Wrap(
+                      children: [
+                        Text('${artistData.name} (${artistData.lifeSpan})',
+                            style: TextStyle(fontSize: 20)),
+                      ],
+                    ),
+                  if (picData.people != null) WrapInfo(artistData.culture, 15),
+                  WrapInfo(picData.caption, 15),
+                  WrapInfo(picData.description, 15),
+                  Wrap(
+                    children: [
+                      ChipInfo(picData.technique),
+                      ChipInfo(picData.medium),
+                      ChipInfo(picData.classification),
+                      if (imageData.width != null && imageData.height != null)
+                        ChipInfo('${imageData.width} x ${imageData.height}'),
+                    ],
+                  ),
+                  WrapInfo(picData.copyright, 15),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ChipInfo extends StatelessWidget {
+  final String text;
+
+  ChipInfo(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    if (text == null) return Padding(padding: EdgeInsets.all(0.0));
+    return Padding(
+      padding: const EdgeInsets.only(right: 2.0, left: 2.0),
+      child: Chip(
+        label: Text(
+          text,
+          style: TextStyle(fontSize: 15),
+        ),
+      ),
+    );
+  }
+}
+
+class WrapInfo extends StatelessWidget {
+  final String text;
+  final double size;
+
+  WrapInfo(this.text, this.size);
+
+  @override
+  Widget build(BuildContext context) {
+    if (text == null) return Padding(padding: EdgeInsets.all(0.0));
+    return Padding(
+      padding: const EdgeInsets.only(right: 2.0, left: 2.0),
+      child: Wrap(
+        children: [Text(text, style: TextStyle(fontSize: size))],
+      ),
     );
   }
 }
