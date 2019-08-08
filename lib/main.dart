@@ -105,9 +105,9 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.white,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.white,
-                        blurRadius: 10.0,
-                        spreadRadius: 3.0,
+                        color: Colors.black54,
+                        blurRadius: 5.0,
+                        spreadRadius: 4.0,
                       ),
                     ],
                     border: Border.all(
@@ -121,7 +121,10 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.only(top: 16.0),
                 width: width,
                 child: Center(
-                  child: Text(data.title),
+                  child: Text(
+                    data.title,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
             ],
@@ -173,9 +176,7 @@ class ArtworkInfoScreen extends StatelessWidget {
                         Text(
                           '${picData.title} (${picData.date})',
                           style: TextStyle(
-                              fontSize: 24.0,
-                              fontStyle: FontStyle.italic,
-                              fontFamily: 'Raleway'),
+                              fontSize: 24.0, fontStyle: FontStyle.italic),
                         ),
                       ],
                     ),
@@ -219,8 +220,10 @@ class ChipInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     if (text == null) return Padding(padding: EdgeInsets.all(0.0));
     return Padding(
-      padding: const EdgeInsets.only(right: 2.0, left: 2.0),
+      padding:
+          const EdgeInsets.only(right: 2.0, left: 2.0, top: 5.0, bottom: 5.0),
       child: Chip(
+        backgroundColor: Colors.teal[50],
         label: Text(
           text,
           style: TextStyle(fontSize: 15),
