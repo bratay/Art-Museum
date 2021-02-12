@@ -1,6 +1,8 @@
 # Art-Museum
  An Android and IOS Flutter application to display artwork from the [Harvard Art Museums](https://www.harvardartmuseums.org) 
  
+ [![app-Screen-Shots.png](https://i.postimg.cc/Zq01SjH0/app-Screen-Shots.png)](https://postimg.cc/945xPdvj)
+ 
  ## Goals
  
  * Display artwork gathered from the Harvard Art Museums [API](https://github.com/harvardartmuseums/api-docs).
